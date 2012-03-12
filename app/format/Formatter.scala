@@ -31,13 +31,6 @@ object Formatter {
           "typeParams" -> sugar(fun.parent.showTypeParams)
         ),
         "docUrl" -> fun.encodedDocUrl,
-        "source" -> (fun.source map { source ⇒
-          JsonObject(
-            "file" -> source.file,
-            "line" -> source.line,
-            "url" -> source.url
-          )
-        }),
         "comment" -> (fun.comment map { com ⇒
           JsonObject(
             "short" -> block(com.short),
