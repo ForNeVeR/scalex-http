@@ -21,17 +21,22 @@ object Application extends Controller {
   val limit = 15
   val cache = WeakHashMap[RawQuery, Result]()
 
-  def index(q: String, page: Int, callback: String) = Action { request ⇒
+  def index(page: Int, callback: String) = Action { request ⇒
 
-    val (rawResult, millis) = Timer.monitor {
-      val query = RawQuery(q, page, limit)
-      cache.getOrElseUpdate(query, search(query))
+    request.queryString get "q" flatMap (_.headOption) map { q =>
+
+      val (rawResult, millis) = Timer.monitor {
+        val query = RawQuery(q.trim, page, limit)
+        cache.getOrElseUpdate(query, search(query))
+      }
+      val result = rawResult map { _.replace("{%milliseconds%}", millis.toString) }
+      val json = result.fold(errorJson, identity)
+
+      if (callback.isEmpty) Ok(json) as "application/json"
+      else Ok("%s(%s)" format (callback, json)) as "application/javascript"
+    } getOrElse {
+      Redirect("http://scalex.org")
     }
-    val result = rawResult map { res ⇒ res.replace("{%milliseconds%}", millis.toString) }
-    val json = result.fold(errorJson, identity)
-
-    if (callback.isEmpty) Ok(json) as "application/json"
-    else Ok("%s(%s)" format (callback, json)) as "application/javascript"
   }
 
   def errorJson(err: String): String = JsonObject("error" -> err) toString
