@@ -2,6 +2,7 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import scala.math.min
 
 import scalex.http._
 import format._
@@ -18,15 +19,15 @@ object Application extends Controller {
   lazy val env = new ScalexHttpEnv
   lazy val engine = env.scalexEnv.engine
 
-  val limit = 15
   val cache = WeakHashMap[RawQuery, Result]()
 
-  def index(page: Int, callback: String) = Action { request ⇒
+  def index(page: Int, per_page: Int, callback: String) = Action { request ⇒
 
     request.queryString get "q" flatMap (_.headOption) map { q =>
 
+      val perPage = min(100, per_page)
       val (rawResult, millis) = Timer.monitor {
-        val query = RawQuery(q.trim, page, limit)
+        val query = RawQuery(q.trim, page, perPage)
         cache.getOrElseUpdate(query, search(query))
       }
       val result = rawResult map { _.replace("{%milliseconds%}", millis.toString) }
