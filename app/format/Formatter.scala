@@ -14,6 +14,7 @@ object Formatter {
     "nbResults" -> paginator.nbResults,
     "page" -> paginator.currentPage,
     "nbPages" -> paginator.nbPages,
+    "milliseconds" -> "{%milliseconds%}",
     "results" -> (defs map { fun ⇒
       JsonObject(
         "name" -> fun.name,
