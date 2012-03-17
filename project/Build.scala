@@ -10,6 +10,7 @@ trait Resolvers {
 trait Dependencies {
   val scalaz = "org.scalaz" %% "scalaz-core" % "6.0.4"
   val specs2 = "org.specs2" %% "specs2" % "1.8.2"
+  val guava = "com.google.guava" % "guava" % "11.0.2"
 }
 
 object ApplicationBuild extends Build with Resolvers with Dependencies {
@@ -22,6 +23,6 @@ object ApplicationBuild extends Build with Resolvers with Dependencies {
 
   val main = PlayProject(appName, appVersion, mainLang = SCALA).settings(
     resolvers ++= Seq(typesafe, iliaz),
-    libraryDependencies ++= Seq(scalaz),
+    libraryDependencies ++= Seq(scalaz, guava),
     scalacOptions := Seq("-deprecation", "-unchecked")) dependsOn scalex
 }

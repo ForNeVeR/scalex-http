@@ -18,19 +18,16 @@ object Application extends Controller {
 
   lazy val env = new ScalexHttpEnv
   lazy val engine = env.scalexEnv.engine
-
-  val cache = WeakHashMap[RawQuery, Result]()
+  lazy val cache = Cache.create(search)
 
   def index(page: Int, per_page: Int, callback: String) = Action { request ⇒
 
     request.queryString get "q" flatMap (_.headOption) map { q =>
 
-      val perPage = min(100, per_page)
       val (rawResult, millis) = Timer.monitor {
-        val query = RawQuery(q.trim, page, perPage)
-        cache.getOrElseUpdate(query, search(query))
+        cache(RawQuery(q.trim, page, min(100, per_page)))
       }
-      val result = rawResult map { _.replace("{%milliseconds%}", millis.toString) }
+      val result = rawResult map (_.replace("{%milliseconds%}", millis.toString))
       val json = result.fold(errorJson, identity)
 
       if (callback.isEmpty) Ok(json) as "application/json"
