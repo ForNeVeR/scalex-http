@@ -9,14 +9,14 @@ trait Resolvers {
 
 trait Dependencies {
   val scalaz = "org.scalaz" %% "scalaz-core" % "6.0.4"
-  val specs2 = "org.specs2" %% "specs2" % "1.8.2"
+  val specs2 = "org.specs2" %% "specs2" % "1.12"
   val guava = "com.google.guava" % "guava" % "11.0.2"
 }
 
 object ApplicationBuild extends Build with Resolvers with Dependencies {
 
   val appName = "scalex-http"
-  val appVersion = "1.0-SNAPSHOT"
+  val appVersion = "1.0"
 
   lazy val scalex = uri("git://github.com/ornicar/scalex#master")
   //lazy val scalex = uri("/home/thib/scalex")
