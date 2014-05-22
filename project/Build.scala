@@ -1,6 +1,5 @@
 import sbt._
 import Keys._
-import PlayProject._
 
 trait Resolvers {
   val typesafe = "typesafe.com" at "http://repo.typesafe.com/typesafe/releases/"
@@ -16,13 +15,19 @@ trait Dependencies {
 object ApplicationBuild extends Build with Resolvers with Dependencies {
 
   val appName = "scalex-http"
-  val appVersion = "1.0"
+  val appVersion = "1.1"
 
   lazy val scalex = uri("git://github.com/ornicar/scalex#master")
   //lazy val scalex = uri("/home/thib/scalex")
 
-  val main = PlayProject(appName, appVersion, mainLang = SCALA).settings(
-    resolvers ++= Seq(typesafe, iliaz),
-    libraryDependencies ++= Seq(scalaz, guava),
-    scalacOptions := Seq("-deprecation", "-unchecked")) dependsOn scalex
+  val scalexHttp = Project(
+	id = "scalexHttp",
+	base = file("."),
+	settings = Defaults.defaultSettings ++ play.Project.playScalaSettings ++ Seq(
+	  name := appName,
+	  version := appVersion,
+	  scalaVersion := "2.10.3",
+      resolvers ++= Seq(typesafe, iliaz),
+      libraryDependencies ++= Seq(scalaz, guava),
+      scalacOptions := Seq("-deprecation", "-unchecked"))) dependsOn scalex
 }
