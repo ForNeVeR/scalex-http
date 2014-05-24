@@ -17,7 +17,7 @@ object ApplicationBuild extends Build with Resolvers with Dependencies {
   val appName = "scalex-http"
   val appVersion = "1.1"
 
-  lazy val scalex = uri("git://github.com/ornicar/scalex#master")
+  lazy val scalex = uri("git://github.com/fornever/scalex#master")
   //lazy val scalex = uri("/home/thib/scalex")
 
   val scalexHttp = Project(
